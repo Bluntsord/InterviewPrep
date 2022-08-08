@@ -1,54 +1,65 @@
-from typing import List
-
-# Definition for a Node.
-class Node(object):
-    def __init__(self, val = 0, neighbors = None):
-        self.val = val
-        self.neighbors = neighbors if neighbors is not None else []
+import queue as q
+from itertools import groupby
 
 
 class Solution:
-    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
-        nodeMap = {}
-        for child, parent in prerequisites:
-            if parent not in nodeMap:
-                nodeMap[parent] = Node(parent, [])
 
-            if child not in nodeMap:
-                nodeMap[child] = Node(child, [])
+    def findOrder(self, numCourses, prerequisites):
+        return self.Kahns_algo(numCourses, prerequisites)
 
-            nodeMap[parent].neighbors.append(nodeMap[child])
 
-        self.visited = [False] * numCourses
-        self.curr_path = [False] * numCourses
 
-        for nodes in nodeMap.values():
-            if self.hasCycle(nodes):
-                return False
-        return True
+    def get_neighbours(self, node):
+        if node in self.adj_list:
+            return self.adj_list[node]
+        return []
 
-        # Essentially cycle detection in a graph
-        # Use dfs for cycle detection
 
-    def hasCycle(self, root):
-        if self.visited[root.val]:
-            return False
-        elif self.curr_path[root.val]:
-            return True
+    def Kahns_algo(self, numCourses, prerequisites):
+        if numCourses == 0:
+            return []
+        prerequisites = list(map(lambda x:(x[0], x[1]), prerequisites))
+        prerequisites2 = list(map(lambda x:(x[1], x[0]), prerequisites))
+        self.adj_list = {k: [v[1] for v in g] for k, g in groupby(sorted(prerequisites2),lambda x: x[0])}
+        in_degree = {k: 0 for k in range(numCourses)}
+        for curr in prerequisites:
+            in_degree[curr[0]] += 1
 
-        self.curr_path[root.val] = True
+        answer = []
+        queue = q.Queue()
+        for node, degree in in_degree.items():
+            if degree == 0:
+                queue.put(node)
+        print(in_degree)
+        print(self.adj_list)
 
-        for neighbour in root.neighbors:
-            if self.hasCycle(neighbour):
-                return True
 
-        self.curr_path[root.val] = False
-        self.visited[root.val] = True
+        while not queue.empty():
+            curr_node = queue.get()
+            answer.append(curr_node)
+            neighbours = self.get_neighbours(curr_node)
 
-        return False
+            for neighbour in neighbours:
+                in_degree[neighbour] -= 1
+                if in_degree[neighbour] == 0:
+                    queue.put(neighbour)
+
+        for degree in in_degree.values():
+            if degree != 0:
+                return []
+
+        return answer
+
+
 
 numCourses = 3
-prerequisites = [[1,0]]
-prerequisites2 = [[1,0], [1,2]]
+prerequisites = [[1,0],[1,2],[0,1]]
+
+
+numCourses2 = 7
+prerequisites2 = [[1,0],[0,3],[0,2],[3,2],[2,5],[4,5],[5,6],[2,4]]
+
+# numCourses = 4
+# prerequisites = [[1,0],[2,0],[3,1],[3,2]]
 solution = Solution()
-print(solution.canFinish(numCourses, prerequisites2))
+print(solution.findOrder(numCourses2, prerequisites2))
