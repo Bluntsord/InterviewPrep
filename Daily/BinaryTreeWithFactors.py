@@ -11,3 +11,4 @@ class Solution:
         return answer
 
     def dp(self, pointer):
+        pass
