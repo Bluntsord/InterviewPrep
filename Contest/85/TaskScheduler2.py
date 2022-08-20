@@ -3,6 +3,7 @@ from typing import *
 
 class Solution:
     def taskSchedulerII(self, tasks: List[int], space: int) -> int:
+<<<<<<< Updated upstream
         task_dict = {}
         answer = 0
         for i in range(len(tasks)):
@@ -21,3 +22,6 @@ tasks = [1,2,1,2,3,1]
 space = 3
 solution = Solution()
 print(solution.taskSchedulerII(tasks, space))
+=======
+        pass
+>>>>>>> Stashed changes
