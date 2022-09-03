@@ -27,4 +27,3 @@ class Solution:
                 return self.memo[curr_node]
 
         neighbours = list(filter(lambda x: x[0] == curr_node or x[1] == curr_node, self.edg))
-        pass
