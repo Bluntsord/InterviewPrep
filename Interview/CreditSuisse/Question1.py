@@ -11,7 +11,7 @@ def areInputsBalancedAfterSwap(a: str, b:str):
         for key_b in b_set:
             handle_change(a_dict, b_dict, a_len_set, b_len_set, key_a, key_b)
 
-            if len(a_len_set) == 1 or len(b_len_set) == 1:
+            if len(a_len_set) == 1 and len(b_len_set) == 1:
                 return True
 
             handle_change(a_dict, b_dict, a_len_set, b_len_set, key_b, key_a)
@@ -60,10 +60,4 @@ def create_len_dict(dictionary: dict):
         answer[value] = answer.get(value, 0) + 1
     return answer
 
-
-print(areInputsBalancedAfterSwap("kktt", "rree") == False)
-print(areInputsBalancedAfterSwap("ddfg", "dccdfg") == True)
-print(areInputsBalancedAfterSwap("dd", "dd") == True)
-print(areInputsBalancedAfterSwap("ddfge", "zabc") == True)
-print(areInputsBalancedAfterSwap("ddffeeee", "fabc") == True)
-print(areInputsBalancedAfterSwap("dzffeeee", "fabc") == False)
+print(areInputsBalancedAfterSwap("zzz", "cc") == False)
