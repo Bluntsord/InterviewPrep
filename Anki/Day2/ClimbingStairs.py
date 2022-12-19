@@ -15,6 +15,6 @@ class Solution(object):
 
         return temp
 
-n = 3
+n = 6
 solution = Solution()
 print(solution.climbStairs(n))

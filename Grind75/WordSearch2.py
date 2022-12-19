@@ -50,63 +50,40 @@ class Trie:
 
 class Solution:
     def findWords(self, board: List[List[str]], words: List[str]) -> List[str]:
-        self.directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-        self.m = len(board)
-        self.n = len(board[0])
-        self.board = board
-        self.trie = Trie()
-        self.visited = {}
+        self.m, self.n = len(board), len(board[0])
+        self.directions = [(0, 1), (1, 0), (0, -1 ), (-1, 0)]
+        self.board, self.trie = board, Trie()
         self.answer = []
+        self.visited = set()
+
         for word in words:
             self.trie.insert(word)
-        self.first_letter_coord = {word[0]: 1 for word in words}
-        self.word_len_dict = {len(word) for word in words}
-        self.max_length = max(self.word_len_dict)
-        self.word_dict = {}
-
-        for word in words:
-            temp = self.word_dict.get(word[0], set())
-            temp.add(word)
-            self.word_dict[word[0]] = temp
-
 
         for i in range(self.m):
             for j in range(self.n):
-                if len(self.word_dict.get(word[0])) == 0:
-                    continue
-                if board[i][j] in self.first_letter_coord and self.trie.search_prefix(board[i][j]) is not None:
-                    self.visited = {}
-                    self.backTracking((i, j), board[i][j])
+                self.visited = set()
+                curr_coord = (i, j)
+                self.backTracking(curr_coord, board[i][j])
 
-        self.answer = list(set(self.answer))
-        return self.answer
+        return list(set(self.answer))
 
-    def backTracking(self, coord, word):
-        head = self.trie.search_prefix(word)
-        if head is None:
+    def backTracking(self, coord, word_so_far):
+        head = self.trie.search_prefix(word_so_far)
+        if not head:
             return
         elif head.is_end:
-            temp = self.word_dict.get(word[0])
-            print(temp)
-            temp.remove(word)
-            print(temp)
-            print("==")
-            self.word_dict[word[0]] = temp
-            self.answer.append(word)
+            self.answer.append(word_so_far)
 
-        if len(word) >= self.max_length:
-            return
-
+        self.visited.add(coord)
         neighbours = self.get_neighbours(coord)
         for neighbour in neighbours:
-            if neighbour in self.visited:
+            next_char = self.board[neighbour[0]][neighbour[1]]
+            if not head.contains_key(next_char):
                 continue
-            next_word = word + self.board[neighbour[0]][neighbour[1]]
-            self.visited[coord] = 1
+            elif next_char in self.visited:
+                continue
 
-            self.backTracking(neighbour, next_word)
-            self.visited.pop(coord)
-
+            self.backTracking(neighbour, word_so_far + next_char)
 
     def is_valid_coord(self, coord):
         if coord[0] < 0 or coord[1] < 0 or coord[0] >= self.m or coord[1] >= self.n:
@@ -119,11 +96,8 @@ class Solution:
         return answer
 
 
-board = [["o","a","a","n"],
-         ["e","t","a","e"],
-         ["i","h","k","r"],
-         ["i","f","l","v"]]
-words = ["oath","pea","eat","rain"]
+board = [["a", "a"]]
+words = ["aaa"]
 
 board1 = [["o","a","a","n"],
          ["e","t","a","e"],
@@ -134,4 +108,4 @@ words2 = ["hklf", "hf"]
 
 
 solution = Solution()
-print(solution.findWords(board1, words2))
+print(solution.findWords(board, words))

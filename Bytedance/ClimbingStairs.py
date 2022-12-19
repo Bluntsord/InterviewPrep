@@ -7,9 +7,10 @@ class Solution(object):
         elif n == 0:
             return 0
 
-        take_one = 1 + Solution.climbStairs(n - 1)
-        take_two = 1 + Solution.climbStairs(n - 2)
+        take_one = 1 + self.climbStairs(n - 1)
+        take_two = 1 + self.climbStairs(n - 2)
         return take_one + take_two
 
 
-
+solution = Solution()
+print(solution.climbStairs(6))
